@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container">
+    <div class="text-center mb-5">
+        <h1 class="display-4 text-danger">⚠️ Admin Control Center</h1>
+        <p class="lead">Manage system operations, flights, and security.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card border-primary mb-3 shadow-sm">
+                <div class="card-header bg-primary text-white">Flight Operations</div>
+                <div class="card-body">
+                    <p class="card-text">Manage routes, schedules, and aircrafts.</p>
+                    <a asp-controller="Flights" asp-action="Index" class="btn btn-outline-primary w-100">Manage Flights</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-success mb-3 shadow-sm">
+                <div class="card-header bg-success text-white">Passenger Data</div>
+                <div class="card-body">
+                    <p class="card-text">Access passenger profiles and documents.</p>
+                    <a asp-controller="Passengers" asp-action="Index" class="btn btn-outline-success w-100">Manage Passengers</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-warning mb-3 shadow-sm">
+                <div class="card-header bg-warning text-dark">Master Booking List</div>
+                <div class="card-body">
+                    <p class="card-text">View all active reservations system-wide.</p>
+                    <a asp-controller="Bookings" asp-action="Index" class="btn btn-outline-warning w-100">View All Bookings</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

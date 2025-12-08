@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Welcome to AMS Airlines";
+}
+
+<div class="p-5 mb-4 bg-light rounded-3" style="background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-1.2.1&auto=format&fit=crop&w=1953&q=80'); background-size: cover; background-position: center; min-height: 400px; position: relative;">
+    <div style="background-color: rgba(0,0,0,0.5); position: absolute; top:0; left:0; width:100%; height:100%; border-radius: 0.3rem;"></div>
+
+    <div class="container-fluid py-5 position-relative text-white">
+        <h1 class="display-5 fw-bold">Fly the Skies with AMS</h1>
+        <p class="col-md-8 fs-4">Experience comfort, safety, and punctuality. Your journey begins here.</p>
+
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <a class="btn btn-primary btn-lg" href="/Identity/Account/Register">Join Us Today</a>
+            <a class="btn btn-outline-light btn-lg" href="/Identity/Account/Login">Login</a>
+        }
+    </div>
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="container mt-5">
+        <h2 class="border-bottom pb-2">Welcome back, @User.Identity.Name!</h2>
+        <p class="text-muted">What would you like to do today?</p>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-airplane-engines" style="font-size: 2rem; color: #0d6efd;"></i>
+                        <h3 class="card-title mt-2">Book a Flight</h3>
+                        <p class="card-text">Search for flights and reserve your seat instantly.</p>
+                        <a asp-controller="Bookings" asp-action="Create" class="btn btn-primary btn-lg">Start Booking</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100" style="background-color: #f8f9fa;">
+                    <div class="card-body text-center">
+                        <i class="bi bi-ticket-perforated" style="font-size: 2rem; color: #6c757d;"></i>
+                        <h3 class="card-title mt-2">My Reservations</h3>
+                        <p class="card-text">Check your status, seat numbers, or cancel bookings.</p>
+                        <a href="#" class="btn btn-secondary btn-lg disabled">Coming Soon</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row align-items-md-stretch">
+        <div class="col-md-6">
+            <div class="h-100 p-5 text-white bg-dark rounded-3">
+                <h2>World Class Service</h2>
+                <p>We provide the best in-flight entertainment and meal options.</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="h-100 p-5 bg-light border rounded-3">
+                <h2>Top Destinations</h2>
+                <p>From Paris to Tokyo, we cover over 100 destinations worldwide.</p>
+            </div>
+        </div>
+    </div>
+}
