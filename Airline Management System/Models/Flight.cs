@@ -16,6 +16,6 @@ namespace Airline_Management_System.Models
         public int TotalSeats { get; set; }
 
         // A flight has many bookings
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }

@@ -1,51 +1,159 @@
 ﻿@model Airline_Management_System.Models.Booking
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Book a Flight";
 }
 
-<h1>Create</h1>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Flight Details</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<h4>Booking</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FlightId" class="control-label"></label>
-                <select asp-for="FlightId" class ="form-control" asp-items="ViewBag.FlightId"></select>
+                        <input type="hidden" asp-for="PassengerId" value="@ViewBag.PassengerId" />
+
+                        <div class="mb-3">
+                            <label asp-for="FlightId" class="control-label fw-bold">Select Flight</label>
+                            <select asp-for="FlightId" class="form-select" asp-items="ViewBag.FlightId"></select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="control-label fw-bold">Select Seat</label>
+                            <div class="border rounded p-3 bg-light text-center">
+                                <div id="seat-map" class="d-flex flex-wrap justify-content-center gap-2">
+                                    </div>
+                                <div class="mt-3">
+                                    <small class="text-muted">Front of Plane</small>
+                                </div>
+                            </div>
+                            
+                            <input type="hidden" asp-for="SeatNumber" id="selectedSeat" />
+                            <span asp-validation-for="SeatNumber" class="text-danger"></span>
+                            
+                            <div class="mt-2 text-center">
+                                Selected: <span id="displaySeat" class="badge bg-success fs-6">None</span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Confirm Booking</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="PassengerId" class="control-label"></label>
-                <select asp-for="PassengerId" class ="form-control" asp-items="ViewBag.PassengerId"></select>
+        </div>
+
+        <div class="col-md-7">
+            <div class="alert alert-info">
+                <h5><i class="bi bi-info-circle"></i> Booking Instructions</h5>
+                <p>Please ensure your travel documents are up to date. Once you confirm your seat, your ticket will be generated immediately.</p>
             </div>
-            <div class="form-group">
-                <label asp-for="SeatNumber" class="control-label"></label>
-                <input asp-for="SeatNumber" class="form-control" />
-                <span asp-validation-for="SeatNumber" class="text-danger"></span>
+            <div class="text-center mt-5">
+                <i class="bi bi-airplane" style="font-size: 8rem; color: #e9ecef;"></i>
             </div>
-            <div class="form-group">
-                <label asp-for="BookingDate" class="control-label"></label>
-                <input asp-for="BookingDate" class="form-control" />
-                <span asp-validation-for="BookingDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const seatMap = document.getElementById('seat-map');
+            const input = document.getElementById('selectedSeat');
+            const display = document.getElementById('displaySeat');
+            const flightDropdown = document.getElementById('FlightId');
+
+            if (!seatMap) return;
+
+            // 1. DYNAMIC Draw Function
+            function drawSeats(takenSeats, totalCapacity) {
+                seatMap.innerHTML = ""; // Clear old map
+
+                // Default to 20 if capacity is missing or 0
+                if (!totalCapacity || totalCapacity < 1) totalCapacity = 20;
+
+                const seatsPerRow = 4; // You can change this to 6 for bigger planes
+                const rows = Math.ceil(totalCapacity / seatsPerRow);
+                const rowLabels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+                let seatCounter = 0;
+
+                for (let r = 0; r < rows; r++) {
+                    // Create a row container
+                    let rowDiv = document.createElement('div');
+                    rowDiv.className = "d-flex justify-content-center gap-2 mb-2 w-100";
+
+                    // Create seats for this row
+                    for (let c = 1; c <= seatsPerRow; c++) {
+                        seatCounter++;
+                        if (seatCounter > totalCapacity) break; // Stop if we hit the limit
+
+                        let seatBtn = document.createElement('button');
+                        let rowChar = rowLabels[r] || '?'; // Get A, B, C...
+                        let seatName = rowChar + c;
+
+                        let isTaken = takenSeats.includes(seatName);
+
+                        seatBtn.type = 'button';
+                        seatBtn.innerText = seatName;
+                        seatBtn.style.width = '45px';
+
+                        if (isTaken) {
+                            seatBtn.className = 'btn btn-secondary text-decoration-line-through';
+                            seatBtn.disabled = true;
+                            seatBtn.title = "Already Booked";
+                        } else {
+                            seatBtn.className = 'btn btn-outline-primary';
+                            seatBtn.onclick = function () {
+                                // Reset other buttons
+                                let allBtns = seatMap.querySelectorAll('.btn-outline-primary, .btn-success');
+                                for (let btn of allBtns) {
+                                    if (!btn.disabled) btn.className = 'btn btn-outline-primary';
+                                }
+                                // Highlight this one
+                                this.className = 'btn btn-success text-white';
+
+                                // Update inputs
+                                if (input) input.value = seatName;
+                                if (display) display.innerText = seatName;
+                            };
+                        }
+                        rowDiv.appendChild(seatBtn);
+                    }
+                    seatMap.appendChild(rowDiv);
+                }
+            }
+
+            // 2. Load Data from Server
+            function loadTakenSeats() {
+                const flightId = flightDropdown.value;
+                if (!flightId) return;
+
+                // Reset Selection
+                if (input) input.value = "";
+                if (display) display.innerText = "None";
+
+                // IMPORTANT: Use the correct URL (Singular or Plural based on your Controller name)
+                fetch(`/Bookings/GetTakenSeats?flightId=${flightId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // data.taken is the list, data.capacity is the number
+                        drawSeats(data.taken, data.capacity);
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            if (flightDropdown) {
+                flightDropdown.addEventListener('change', loadTakenSeats);
+                loadTakenSeats();
+            }
+        });
+    </script>
 }

@@ -46,17 +46,17 @@ namespace Airline_Management_System.Controllers
         }
 
         // GET: Flights/Create
+        // This displays the empty form to the Admin
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Flights/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // This receives the data from the form and saves it to the Database
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FlightNumber,Origin,Destination,DepartureTime,ArrivalTime,AircraftType,TotalSeats")] Flight flight)
+        public async Task<IActionResult> Create([Bind("Id,FlightNumber,Origin,Destination,DepartureTime,ArrivalTime,AircraftType,Capacity")] Flight flight)
         {
             if (ModelState.IsValid)
             {

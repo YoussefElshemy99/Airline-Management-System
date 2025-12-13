@@ -1,5 +1,6 @@
 ﻿using Airline_Management_System.Data;
 using Airline_Management_System.Models;
+using Airline_Management_System.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,10 +16,12 @@ namespace Airline_Management_System.Controllers
     public class PassengersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly EmailSender _emailSender;
 
-        public PassengersController(ApplicationDbContext context)
+        public PassengersController(ApplicationDbContext context, EmailSender emailSender)
         {
             _context = context;
+            _emailSender = emailSender;
         }
 
         // GET: Passengers
@@ -62,7 +65,20 @@ namespace Airline_Management_System.Controllers
             {
                 _context.Add(passenger);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                // --- SEND EMAIL ---
+                string subject = "Welcome to Our Airline!";
+                string body = $"<h3>Welcome, {passenger.FullName}!</h3><p>Your passenger profile has been created successfully.</p>";
+
+                // We use try-catch so the app doesn't crash if the internet is down
+                try
+                {
+                    await _emailSender.SendEmailAsync(passenger.ContactEmail, subject, body);
+                }
+                catch { /* Log error if needed, but let user continue */ }
+                // ------------------
+
+                return RedirectToAction("Create", "Booking");
             }
             return View(passenger);
         }

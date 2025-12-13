@@ -1,0 +1,62 @@
+﻿@model Airline_Management_System.Models.Feedback
+
+@{
+    ViewData["Title"] = "Leave Feedback";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0"><i class="bi bi-star-fill text-warning"></i> Rate Your Journey</h4>
+                    <p class="mb-0 small text-white-50">We value your opinion!</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="FlightId" class="form-label fw-bold">Which flight are you reviewing?</label>
+                            <select asp-for="FlightId" class="form-select form-select-lg" asp-items="ViewBag.FlightId"></select>
+                            <div class="form-text text-muted">Only showing flights you have already completed.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CustomerName" class="form-label fw-bold">Your Name</label>
+                            <input asp-for="CustomerName" class="form-control bg-light" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Rating" class="form-label fw-bold">Overall Experience</label>
+                            <select asp-for="Rating" class="form-select">
+                                <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
+                                <option value="4">⭐⭐⭐⭐ - Good</option>
+                                <option value="3">⭐⭐⭐ - Average</option>
+                                <option value="2">⭐⭐ - Poor</option>
+                                <option value="1">⭐ - Terrible</option>
+                            </select>
+                            <span asp-validation-for="Rating" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Comments" class="form-label fw-bold">Your Comments</label>
+                            <textarea asp-for="Comments" class="form-control" rows="5" placeholder="Tell us what you liked or how we can improve..."></textarea>
+                            <span asp-validation-for="Comments" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Submit Review</button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

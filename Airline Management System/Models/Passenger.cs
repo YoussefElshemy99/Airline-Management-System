@@ -9,6 +9,6 @@
         public string PhoneNumber { get; set; }
 
         // A passenger can have many bookings
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }
