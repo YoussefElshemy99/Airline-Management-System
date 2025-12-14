@@ -1,5 +1,12 @@
 ﻿namespace Airline_Management_System.Models
 {
+    public enum BookingStatus
+    {
+        Booked,      // Default when created
+        CheckedIn,   // When user checks in online
+        Cancelled    // When user cancels (instead of deleting)
+    }
+
     public class Booking
     {
         public int Id { get; set; }

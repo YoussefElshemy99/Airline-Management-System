@@ -260,7 +260,9 @@ namespace Airline_Management_System.Controllers
             var booking = await _context.Bookings.FindAsync(id);
             if (booking != null)
             {
-                _context.Bookings.Remove(booking);
+                booking.Status = BookingStatus.Cancelled;
+                _context.Update(booking); // Save the change
+                await _context.SaveChangesAsync();
             }
 
             await _context.SaveChangesAsync();
